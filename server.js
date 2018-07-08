@@ -33,7 +33,7 @@ clock.ready(() => {
   // TCP
   const sw = discSwarm(swarmDefaults({
     tcp: true,
-    udp: false,
+    utp: false,
     dht: false,
     live: true,
     hash: false,
@@ -60,9 +60,12 @@ clock.ready(() => {
     dht: false,
     live: true,
     hash: false,
+    dns: false,
+    /*
     dns: {
       server: null, domain: 'dat.local'
     },
+    */
     stream: () => protocol({
       timeout: false,
       broadcast: true,

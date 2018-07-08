@@ -11,6 +11,9 @@ const dgram = require('dgram')
 const stream = require('stream')
 const duplexify = require('duplexify')
 
+console.log('Loading clock feed.')
+console.log('Bootstrapping off of TCP, then switching to multicast-only...')
+
 let mode = 'Bootstrapping (TCP)'
 
 const key = fs.readFileSync('./key')
@@ -90,7 +93,6 @@ client.on('listening', function () {
 setTimeout(() => {
   client.on('message', function (message, remote) {
     // console.log('From: ' + remote.address + ':' + remote.port, message)
-    // multicastReadable.push(message)
     multicastStream.push(message)
   })
 }, 500)
@@ -106,10 +108,9 @@ function sendToProxy () {
   })
   multicastProxyStream._remoteFeeds[0] = multicastProxyStream._feed(discoveryKey)
   const feed = proxy(multicastStream, {stream: multicastProxyStream})
-  // feed.handshake({})
   multicastProxyStream.on('close', () => {
     console.log('Proxy stream closed')
-    sendToProxy()
+    setTimeout(() => sendToProxy(), 1000)
   })
   multicastProxyStream.on('error', err => {
     console.log('Proxy stream error', err ? err.message : '')
@@ -124,7 +125,6 @@ clock.ready(() => {
   console.log('Length', clock.length)
   clock.createReadStream({live: true, tail: true}).on('data', data => {
     console.log(`${mode}: ${data.time}`)
-    // console.log('\n\n')
   })
 })
 

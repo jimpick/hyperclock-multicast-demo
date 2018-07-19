@@ -4,7 +4,10 @@ const ram = require('random-access-memory')
 const swarmDefaults = require('dat-swarm-defaults')
 const discSwarm = require('discovery-swarm')
 
-const clock = hyperclock(ram, {interval: 5000})
+// const clock = hyperclock(ram, {interval: 1})
+// const clock = hyperclock(ram, {interval: 10})
+const clock = hyperclock(ram, {interval: 100})
+// const clock = hyperclock(ram, {interval: 1000})
 
 clock.ready(() => {
   fs.writeFileSync('./key', clock.key)
@@ -25,14 +28,19 @@ clock.ready(() => {
   }))
   sw.join(clock.discoveryKey)
   sw.on('connection', function (peer, info) {
-    console.log('new connection', info.host, info.port,
+    console.log('\nnew connection', info.host, info.port,
                 info.initiator ? 'outgoing' : 'incoming') 
     peer.on('close', function () {
-      console.log('peer disconnected')
+      console.log('\npeer disconnected')
     })
   })
 
-  clock.createReadStream({live: true}).on('data', console.log)
+  // clock.createReadStream({live: true}).on('data', console.log)
+  let count = 0
+  clock.createReadStream({live: true}).on('data', () => {
+    process.stdout.write('.')
+    if (count++ % 1000 === 0) console.log(`\n${count - 1}`)
+  })
 })
 
 

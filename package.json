@@ -11,6 +11,7 @@
     "dat-swarm-defaults": "^1.0.1",
     "discovery-swarm": "^5.1.2",
     "duplexify": "^3.6.0",
+    "gc-stats": "^1.2.0",
     "hyperclock": "^1.0.0",
     "hypercore-crypto": "^1.0.0",
     "hypercore-multicast-swarm": "^1.0.0",

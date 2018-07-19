@@ -5,6 +5,10 @@ const discoverySwarm = require('discovery-swarm')
 const mswarm = require('hypercore-multicast-swarm')
 const hypercore = require('hypercore')
 const ram = require('random-access-memory')
+const gcStats = require('gc-stats')
+
+let gcHeapUsed = 0
+let count = 0
 
 // Maybe use? https://github.com/mafintosh/multi-random-access
 
@@ -46,19 +50,63 @@ const msw = mswarm(feed, {
 })
 
 feed.on('download', (index, data) => {
-  console.log('Download', index, data)
-  msw.multicast(index)
-})
-feed.on('append', () => {
-  console.log('Append', feed.length)
+  // console.log('Download', index)
+  process.stdout.write('.')
+  msw.multicast(index, err => {
+    if (err) console.error('\nMulticast error', index, err.message)
+    // console.log('Sent', index)
+    const clearIndex = index - 500
+    if (false && clearIndex >= 0) {
+      feed.clear(clearIndex, err => {
+        if (err) console.error('\nError clearing', clearIndex, err.message)
+        process.stdout.write('x')
+        // console.log('Cleared', index, err)
+      })
+    }
+  })
+  if ((count++ % 100) === 0) {
+    // console.log('Jim1', index, count)
+    feed._storage.data.stat((err, info) => {
+      // console.log('Jim data stat', info)
+      const heapUsed = Math.round(
+        process.memoryUsage().heapUsed / 1024 / 1024 * 100
+      ) / 100
+      const ramUsed = Math.round(
+        info.size / 1024 / 1024 * 100
+      ) / 100
+      console.log(
+        '\nDownload', index,
+        'RAM:', ramUsed.toFixed(3),
+        'GC:', gcHeapUsed.toFixed(3),
+        'GC-RAM:', (gcHeapUsed-ramUsed).toFixed(3),
+        'Current:', heapUsed.toFixed(3)
+      )
+    })
+  }
 })
 
 feed.ready(() => {
   feed.update(() => {
-    console.log('Jim length', feed.length)
+    console.log('Length', feed.length)
     stream = feed.createReadStream({live: true, tail: true})
     stream.on('data', data => {
-      console.log('Data', data)
+      // console.log('Data', data)
     })
   })
 })
+
+const gc = gcStats()
+gc.on('stats', function (stats) {
+  gcHeapUsed = Math.round(
+    process.memoryUsage().heapUsed / 1024 / 1024 * 100
+  ) / 100
+  // console.log('GC happened', gcHeapUsed, stats)
+})
+
+function dumpMemoryUsage () {
+  const used = process.memoryUsage()
+  for (let key in used) {
+    console.log(`  ${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`)
+  }
+}
+

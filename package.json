@@ -13,6 +13,7 @@
     "duplexify": "^3.6.0",
     "gc-stats": "^1.2.0",
     "hyperclock": "^1.0.0",
+    "hypercore": "^6.18.1",
     "hypercore-crypto": "^1.0.0",
     "hypercore-multicast-swarm": "^1.0.0",
     "hypercore-protocol-proxy": "^1.1.0",

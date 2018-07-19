@@ -56,7 +56,7 @@ feed.on('download', (index, data) => {
     if (err) console.error('\nMulticast error', index, err.message)
     // console.log('Sent', index)
     const clearIndex = index - 500
-    if (false && clearIndex >= 0) {
+    if (clearIndex >= 0) {
       feed.clear(clearIndex, err => {
         if (err) console.error('\nError clearing', clearIndex, err.message)
         process.stdout.write('x')
@@ -88,8 +88,22 @@ feed.on('download', (index, data) => {
 feed.ready(() => {
   feed.update(() => {
     console.log('Length', feed.length)
+
+    /*
+    readNext()
+
+    function readNext () {
+      const index = feed.length
+      feed.get(index, (err, data) => {
+        if (err) process.error('\nGet error', err.message)
+        process.stdout.write('r')
+        readNext()
+      })
+    }
+    */
     stream = feed.createReadStream({live: true, tail: true})
     stream.on('data', data => {
+      process.stdout.write('r')
       // console.log('Data', data)
     })
   })

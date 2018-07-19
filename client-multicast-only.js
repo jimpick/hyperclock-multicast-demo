@@ -6,7 +6,8 @@ const mswarm = require('hypercore-multicast-swarm')
 const hyperclock = require('hyperclock')
 const ram = require('random-access-memory')
 
-console.log('Loading clock feed. (Multicast only) !!!! Doesn't work !!!!')
+console.log('Loading clock feed. (Multicast only)')
+console.log("!!! Doesn't work (probably needs bootstrapping)")
 
 let mode = 'Multicast only'
 
@@ -29,11 +30,9 @@ const msw = mswarm(clock, {
 clock.ready(() => {
   console.log('Key:', clock.key.toString('hex'))
   console.log('Discovery Key:', clock.discoveryKey.toString('hex'))
-  clock.update(() => {
-    console.log('Length', clock.length)
-    clock.createReadStream({live: true, tail: true}).on('data', data => {
-      console.log(`${mode}: ${data.time}`)
-    })
+  console.log('Length', clock.length)
+  clock.createReadStream({live: true, tail: true}).on('data', data => {
+    console.log(`${mode}: ${data.time}`)
   })
 })
 

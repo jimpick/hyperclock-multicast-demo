@@ -6,9 +6,9 @@ const hyperclock = require('hyperclock')
 const ram = require('random-access-memory')
 
 console.log('Loading clock feed.')
-console.log('Bootstrapping off of TCP...')
+console.log('TCP only...')
 
-let mode = 'Bootstrapping (TCP)'
+let mode = 'TCP only'
 
 const key = fs.readFileSync('./key')
 const discoveryKey = crypto.discoveryKey(key) 
@@ -42,9 +42,11 @@ sw.on('connection', function (peer, info) {
 clock.ready(() => {
   console.log('Key:', clock.key.toString('hex'))
   console.log('Discovery Key:', clock.discoveryKey.toString('hex'))
-  console.log('Length', clock.length)
-  clock.createReadStream({live: true, tail: true}).on('data', data => {
-    console.log(`${mode}: ${data.time}`)
+  clock.update(() => {
+    console.log('Length', clock.length)
+    clock.createReadStream({live: true, tail: true}).on('data', data => {
+      console.log(`${mode}: ${data.time}`)
+    })
   })
 })
 

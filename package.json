@@ -11,12 +11,10 @@
     "dat-swarm-defaults": "^1.0.1",
     "discovery-swarm": "^5.1.2",
     "duplexify": "^3.6.0",
-    "hyperclock": "jimpick/hyperclock#multicast-experimenting",
-    "hypercore": "jimpick/hypercore#multicast-experimenting",
+    "hyperclock": "^1.0.0",
     "hypercore-crypto": "^1.0.0",
-    "hypercore-protocol": "jimpick/hypercore-protocol#multicast-experimenting",
+    "hypercore-multicast-swarm": "^1.0.0",
     "hypercore-protocol-proxy": "^1.1.0",
-    "pump": "^3.0.0",
     "random-access-memory": "^3.0.0"
   }
 }

@@ -2,9 +2,9 @@ const fs = require('fs')
 const crypto = require('hypercore-crypto')
 const swarmDefaults = require('dat-swarm-defaults')
 const discoverySwarm = require('discovery-swarm')
+const mswarm = require('hypercore-multicast-swarm')
 const hypercore = require('hypercore')
 const ram = require('random-access-memory')
-const mswarm = require('hypercore-multicast-swarm')
 
 // Maybe use? https://github.com/mafintosh/multi-random-access
 

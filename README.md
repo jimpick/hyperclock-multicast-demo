@@ -7,6 +7,13 @@ public key out to a file)
 
 In another terminal, run:
 
+`node proxy-transmitter`
+
+(this will connect to the timer over the swarm, and echo each update to
+the multicast address)
+
+In a 3rd terminal, run:
+
 `node client`
 
 The client will read the public key from the file, and then "bootstrap"
